@@ -47,5 +47,21 @@ public class RestControllerTest {
 		});
 
 	}
+	
+	@Test
+	public void checkIdentificationsOrder(){
+		running(testServer(3333, fakeApplication(inMemoryDatabase())), new Runnable() {
+			@Override
+			public void run() {
+				List<Identification> identifications = WS.url("http://localhost:3333/api/v1/identifications").get().get(1000);
+				 for(int i=0;i<identifications.size()-1;i++)Identification iden : identifications){
+					 assertTrue(identifications.get(i).getWaiting_time() >= identifications.get(i+1).getWaiting_time());
+					 assertTrue(identifications.get(i).getCompany().getCurrent_sla_percentage() >= identifications.get(i+1).getCompany().getCurrent_sla_percentage());
+					 assertTrue(identifications.get(i).getCompany().getSla_percentage() >= identifications.get(i+1).getCompany().getSla_percentage());
+				 }
+			}
+		});
+		
+	}
 
 }
